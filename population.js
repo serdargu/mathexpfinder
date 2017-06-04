@@ -1,36 +1,70 @@
+/** 
+ * Population Class - holds one population
+ * @param {String} series - 
+ * @param {Number} m - 
+ * @param {Number} num - 
+ */ 
+
 function Population(series, m, num) {
 
-  this.population; // to hold all population
-  this.matingPool;                   // ArrayList which we will use for our "mating pool"
+  this.population = []; // to hold all DNAs.
+  this.matingPool = []; // arrayList which we will use for our "mating pool"
   this.generations = 0; // number of generations
   this.finished = false; // is the fitness funtion reaches the perfect score?
   this.mutationRate = m; // mutation rate
   this.perfectScore = series.length - 1; //higest value that fitness function can have
   this.series = series; // array of numbers entered by user
-
   this.best = ""; // to hold the best generation every generation
 
-  this.population = [];
+  //create DNAs with number of given input
   for (var i = 0; i < num; i++) {
-    
-    this.population[i] = new DNA(); // create new DNA and store it
-
+    this.population[i] = new DNA(); //create new DNA and store it
   }
   
-  this.matingPool = [];
+  /** 
+   * Function getBest - getter method for best expression
+   */
+  this.getBest = function() {
+    return this.best;
+  }
+
+  /** 
+   * Function isFinished - getter method for finished
+   */
+  this.isFinished = function() {
+    return this.finished;
+  }
+
+  /** 
+   * Function getGenerations - getter method for generations
+   */
+  this.getGenerations = function() {
+    return this.generations;
+  }
   
-  //calculate fitness for all population
+  /** 
+   * Function calcFitness - to calculate fitness for all population
+   */
   this.calcFitness = function() {
     for (var i = 0; i < this.population.length; i++) {
       this.population[i].calcFitness(this.series);
     }
   }
+
   this.calcFitness(); // call the function
 
+  /** 
+   * Function poolRate - to calculate the average fitness for the current population
+   * @return {Number} average fitness
+   */
   this.poolRate = function(fitness, start, end, start_, end_) {
     return fitness*((end_ - start_) / (end - start));
   }
 
+  /** 
+   * Function naturalSelection - to calculate the average fitness for the current population
+   * @return {Number} average fitness
+   */
   this.naturalSelection = function() {
 
     this.matingPool = [];
@@ -54,7 +88,9 @@ function Population(series, m, num) {
 
   }
 
-  //create a new generation from pool
+  /** 
+   * Function generate - to create a new generation from pool
+   */
   this.generate = function() {
     for (var i = 0; i < this.population.length; i++) {
       var partnerA = this.matingPool[Math.floor(Math.random()*this.matingPool.length)]; //this.matingPool[a];
@@ -66,41 +102,33 @@ function Population(series, m, num) {
     this.generations++;
   }
 
-
-  this.getBest = function() {
-    return this.best;
-  }
-
-  // Compute the current "most fit" member of the population
+  /** 
+   * Function evaluate - to compute the current "most fit" member of the population
+   */
   this.evaluate = function() {
-    var worldrecord = 0.0;
+    var bestExpression = 0.0;
     var index = 0;
     for (var i = 0; i < this.population.length; i++) {
-      if (this.population[i].fitness > worldrecord) {
+      if (this.population[i].fitness > bestExpression) {
         index = i;
-        worldrecord = this.population[i].fitness;
+        bestExpression = this.population[i].fitness;
       }
     }
 
-    this.best_a = this.population[index].genes[0];
-    this.best_b = this.population[index].genes[1];
-    this.best_c = this.population[index].genes[2];
-
+    // get the best expression of the current population and store it
     this.best = this.population[index].getExpression();
-    if (worldrecord === this.perfectScore) {
+
+    // check if the current population has the best expression 
+    if (bestExpression === this.perfectScore) {
       this.finished = true;
     }
+
   }
 
-  this.isFinished = function() {
-    return this.finished;
-  }
-
-  this.getGenerations = function() {
-    return this.generations;
-  }
-
-  //calculate the average fitness for the current population
+  /** 
+   * Function getAverageFitness - to calculate the average fitness for the current population
+   * @return {Number} average fitness
+   */
   this.getAverageFitness = function() {
     var total = 0;
     for (var i = 0; i < this.population.length; i++) {
@@ -109,7 +137,10 @@ function Population(series, m, num) {
     return total / (this.population.length);
   }
 
-  //to print all expressions in the current population
+  /** 
+   * Function allExpressions - to print all expressions in the current population
+   * @return {String} expressions - all expressions
+   */
   this.allExpressions = function() {
     
     var expressions = "";
@@ -118,5 +149,6 @@ function Population(series, m, num) {
     }
     return expressions;
   }
+
 }
 

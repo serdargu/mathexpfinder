@@ -1,20 +1,42 @@
+/** 
+ * Function newCoefficient - to create new coefficient for the expression
+ * @return {Number} coefficient
+ */ 
 function newCoefficient() {
   return Math.floor((Math.random() * 100));
 }
 
+/** 
+ * DNA Class - holds one DNA
+ */ 
 function DNA() {
 
-  this.genes = [];
-  this.fitness = 0;
-  for (var i = 0; i < 3; i++) {
+  this.genes = []; //
+  this.fitness = 0; // 
+
+  // create new coefficient for all genes
+  // ax^2 + bx + c => a,b,c are genes
+  for (var i = 0; i < 3; i++) { 
     this.genes[i] = newCoefficient(); 
   }
 
+  /** 
+   * Function crossover - crossover
+   * @param {String} series - 
+   * @param {Number} m - 
+   * @param {Number} num - 
+   */ 
   // converts coefficients to string expression
   this.getExpression = function() {
     return this.genes[0] + "*(x**2) + " + this.genes[1] + "*x + " + this.genes[2];
   }
 
+  /** 
+   * Function crossover - crossover
+   * @param {String} series - 
+   * @param {Number} m - 
+   * @param {Number} num - 
+   */ 
   //calculate the fitness function
   this.calcFitness = function(series) {
     var score = 0;
@@ -29,7 +51,10 @@ function DNA() {
     this.fitness = score;
   }
 
-  // Crossover
+  /** 
+   * Function crossover - crossover
+   * @param {String} partner - 
+   */
   this.crossover = function(partner) {
     //create a new DNA
     var child = new DNA();
@@ -44,7 +69,10 @@ function DNA() {
     return child;
   }
 
-  // Based on a mutation probability, picks a new random character
+  /** 
+   * Function mutate - based on a mutation probability, picks a new random character
+   * @param {String} mutationRate - 
+   */
   this.mutate = function(mutationRate) {
     for (var i = 0; i < this.genes.length; i++) {
       if (Math.random(1) < mutationRate) {
