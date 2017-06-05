@@ -1,10 +1,9 @@
 /** 
  * Population Class - holds one population
- * @param {String} series - 
- * @param {Number} m - 
- * @param {Number} num - 
+ * @param {String} series - array of numbers which is entered by the user
+ * @param {Number} m - mutation rate which is entered by user
+ * @param {Number} num - total number of population which is entered by user
  */ 
-
 function Population(series, m, num) {
 
   this.population = []; // to hold all DNAs.
@@ -51,25 +50,24 @@ function Population(series, m, num) {
     }
   }
 
-  this.calcFitness(); // call the function
+  this.calcFitness(); // call the calculate fitness function
 
   /** 
-   * Function poolRate - to calculate the average fitness for the current population
-   * @return {Number} average fitness
+   * Function poolRate - to calculate the rate of DNA that will be pushed on the pool
+   * @return {Number} pool rate
    */
   this.poolRate = function(fitness, start, end, start_, end_) {
     return fitness*((end_ - start_) / (end - start));
   }
 
   /** 
-   * Function naturalSelection - to calculate the average fitness for the current population
-   * @return {Number} average fitness
+   * Function naturalSelection - to create mating pool with highest fitness value of DNAs
    */
   this.naturalSelection = function() {
 
     this.matingPool = [];
 
-    //calculate the max fitness in the population
+    // calculate the max fitness in the population
     var maxFitness = 0;
     for (var i = 0; i < this.population.length; i++) {
       if (this.population[i].fitness > maxFitness) {
@@ -77,7 +75,7 @@ function Population(series, m, num) {
       }
     }
 
-    //push members with mostly highest fitness value to mating pool 
+    // push members with mostly highest fitness value to mating pool 
     for (var i = 0; i < this.population.length; i++) {
       var fitness = this.poolRate(this.population[i].fitness,0,maxFitness,0,1);
       var n = Math.floor(fitness * 100);
@@ -93,8 +91,8 @@ function Population(series, m, num) {
    */
   this.generate = function() {
     for (var i = 0; i < this.population.length; i++) {
-      var partnerA = this.matingPool[Math.floor(Math.random()*this.matingPool.length)]; //this.matingPool[a];
-      var partnerB = this.matingPool[Math.floor(Math.random()*this.matingPool.length)]; //this.matingPool[b];
+      var partnerA = this.matingPool[Math.floor(Math.random()*this.matingPool.length)];
+      var partnerB = this.matingPool[Math.floor(Math.random()*this.matingPool.length)];
       var child = partnerA.crossover(partnerB);
       child.mutate(this.mutationRate);
       this.population[i] = child;
@@ -132,14 +130,14 @@ function Population(series, m, num) {
   this.getAverageFitness = function() {
     var total = 0;
     for (var i = 0; i < this.population.length; i++) {
-      total += this.population[i].fitness;
+      total += this.population[i].fitness; // sum all fitness in this population
     }
     return total / (this.population.length);
   }
 
   /** 
    * Function allExpressions - to print all expressions in the current population
-   * @return {String} expressions - all expressions
+   * @return {String} expressions
    */
   this.allExpressions = function() {
     
